@@ -23,7 +23,7 @@ const serverUrl = configuredServer || (onGitHubPages ? '' : location.origin);
 
 if (typeof io !== 'function') {
   setLobbyEnabled(false);
-  showError("La bibliothèque temps réel n'a pas pu être chargée. Vérifie ta connexion Internet puis recharge la page.");
+  showError("La connexion temps réel n'a pas pu démarrer. Vérifie que ton serveur Render est bien en ligne puis recharge la page.");
 } else if (!serverUrl) {
   setLobbyEnabled(false);
   showError("GitHub Pages est prêt, mais l'adresse du serveur de jeu manque. Ouvre docs/config.js et renseigne window.POKER_SERVER_URL avec l'adresse de ton serveur Render.");

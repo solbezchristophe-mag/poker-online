@@ -111,3 +111,7 @@ npm start
 Puis ouvre :
 
 `http://localhost:3000`
+
+## Correction Safari / GitHub Pages
+
+Cette version ne dépend plus d'un CDN externe pour Socket.IO. La bibliothèque temps réel est chargée directement depuis l'adresse Render définie dans `docs/config.js`. Si le message indique que le serveur temps réel est inaccessible, vérifiez d'abord que l'URL Render est exacte et que le service Render est en ligne.
