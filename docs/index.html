@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07100d" />
+  <title>Poker privé en ligne</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="lobby" class="panel lobby">
+      <div class="logo">♠ <span>♥</span> ♣ <span>♦</span></div>
+      <h1>Poker privé</h1>
+      <p>Crée une table, joue seul contre des bots ou partage le lien avec tes amis.</p>
+      <input id="name" maxlength="18" placeholder="Ton prénom / pseudo" autocomplete="nickname" />
+      <button id="create" class="primary">Créer une table</button>
+      <div class="divider"><span>ou</span></div>
+      <div class="joinRow">
+        <input id="room" maxlength="6" placeholder="Code table" autocapitalize="characters" />
+        <button id="join">Rejoindre</button>
+      </div>
+      <small>2 à 10 places • Jetons virtuels uniquement • Sans argent réel</small>
+      <div id="error"></div>
+    </section>
+
+    <section id="game" class="hidden">
+      <header>
+        <div><strong>Table <span id="tableId"></span></strong><div id="phase"></div></div>
+        <div class="headerBtns"><button id="copyCode">Copier le code</button><button id="share">Partager</button></div>
+      </header>
+
+      <main>
+        <div class="toolbar">
+          <div><strong id="seatCount">1/10</strong> places</div>
+          <div id="hostControls" class="hostControls hidden">
+            <button id="addBot">+ Ajouter un bot</button>
+          </div>
+        </div>
+
+        <div id="table" class="pokerTable">
+          <div id="players"></div>
+          <div class="center">
+            <div class="tableTitle">TEXAS HOLD'EM</div>
+            <div id="community" class="cards"></div>
+            <div class="pot">Pot : <strong id="pot">0</strong></div>
+            <div id="message"></div>
+          </div>
+        </div>
+
+        <div class="mePanel">
+          <div class="myHand">
+            <div class="label">MES CARTES</div>
+            <div id="myCards" class="cards big"></div>
+          </div>
+          <div id="actions" class="actions">
+            <button data-action="fold" class="danger">Se coucher</button>
+            <button data-action="check">Parole</button>
+            <button data-action="call">Suivre</button>
+            <div class="raiseBox"><input id="raiseAmount" type="number" min="20" step="10" value="40" /><button data-action="raise" class="primary">Relancer</button></div>
+          </div>
+          <button id="start" class="primary startBtn hidden">Démarrer la partie</button>
+        </div>
+        <div id="gameError" class="gameError"></div>
+      </main>
+    </section>
+  </div>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-8ExARjWWkIllMlNzVg7JKq9RKWPlJ4xL9wQiy9pn7TMr8cGqtSvYFqJz8G7hbb6t" crossorigin="anonymous"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
