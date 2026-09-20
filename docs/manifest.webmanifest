@@ -3,7 +3,7 @@
   "short_name": "Poker",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "display_override": ["fullscreen", "standalone"],
   "background_color": "#05080a",
   "theme_color": "#070b0e",
