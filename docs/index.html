@@ -2,9 +2,16 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#07100d" />
-  <title>Poker privé en ligne</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#070b0e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Poker privé" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>Poker privé</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,7 +19,7 @@
     <section id="lobby" class="panel lobby">
       <div class="logo">♠ <span>♥</span> ♣ <span>♦</span></div>
       <h1>Poker privé</h1>
-      <p>Crée une table, joue seul contre des bots ou partage le lien avec tes amis.</p>
+      <p>Crée une table, joue contre des bots ou invite tes amis avec un lien.</p>
       <input id="name" maxlength="18" placeholder="Ton prénom / pseudo" autocomplete="nickname" />
       <button id="create" class="primary">Créer une table</button>
       <div class="divider"><span>ou</span></div>
@@ -20,50 +27,100 @@
         <input id="room" maxlength="6" placeholder="Code table" autocapitalize="characters" />
         <button id="join">Rejoindre</button>
       </div>
-      <small>2 à 10 places • Jetons virtuels uniquement • Sans argent réel</small>
+      <small>2 à 10 places • Jetons virtuels • Sans argent réel</small>
       <div id="error"></div>
     </section>
 
-    <section id="game" class="hidden">
-      <header>
-        <div><strong>Table <span id="tableId"></span></strong><div id="phase"></div></div>
-        <div class="headerBtns"><button id="copyCode">Copier le code</button><button id="share">Partager</button></div>
+    <section id="game" class="hidden gameShell">
+      <header class="gameHeader">
+        <div class="tableMeta">
+          <strong>Table <span id="tableId"></span></strong>
+          <span id="blindsLabel" class="blindsLabel">10 / 20</span>
+          <span id="phase" class="phaseLabel"></span>
+        </div>
+        <div class="headerBtns">
+          <button id="copyCode" class="iconBtn" aria-label="Copier le code" title="Copier le code">#</button>
+          <button id="share" class="iconBtn" aria-label="Partager" title="Partager">↗</button>
+          <button id="fullscreen" class="iconBtn" aria-label="Plein écran" title="Plein écran">⛶</button>
+          <button id="settingsBtn" class="iconBtn" aria-label="Réglages" title="Réglages">⚙</button>
+        </div>
       </header>
 
-      <main>
+      <main class="gameMain">
         <div class="toolbar">
-          <div><strong id="seatCount">1/10</strong> places</div>
+          <div class="seatInfo"><strong id="seatCount">1/10</strong> joueurs</div>
           <div id="hostControls" class="hostControls hidden">
-            <button id="addBot">+ Ajouter un bot</button>
+            <button id="addBot" class="addBotBtn">+ Ajouter un bot</button>
           </div>
         </div>
 
-        <div id="table" class="pokerTable">
-          <div id="players"></div>
-          <div class="center">
-            <div class="tableTitle">TEXAS HOLD'EM</div>
-            <div id="community" class="cards"></div>
-            <div class="pot">Pot : <strong id="pot">0</strong></div>
-            <div id="message"></div>
+        <div class="tableStage">
+          <div id="table" class="pokerTable">
+            <div class="railGlow"></div>
+            <div id="players"></div>
+            <div class="center">
+              <div class="tableBrand">POKER PRIVÉ</div>
+              <div id="community" class="cards communityCards"></div>
+              <div class="potPill"><span>Pot</span><strong id="pot">0</strong></div>
+              <div id="message"></div>
+            </div>
           </div>
         </div>
 
-        <div class="mePanel">
+        <section class="bottomDock">
           <div class="myHand">
-            <div class="label">MES CARTES</div>
-            <div id="myCards" class="cards big"></div>
+            <div class="handCaption">MA MAIN</div>
+            <div id="myCards" class="cards heroCards"></div>
           </div>
-          <div id="actions" class="actions">
-            <button data-action="fold" class="danger">Se coucher</button>
-            <button data-action="check">Parole</button>
-            <button data-action="call">Suivre</button>
-            <div class="raiseBox"><input id="raiseAmount" type="number" min="20" step="10" value="40" /><button data-action="raise" class="primary">Relancer</button></div>
+
+          <div id="actionZone" class="actionZone">
+            <div id="actions" class="actions">
+              <button data-action="fold" class="actionBtn foldBtn"><span>Se coucher</span></button>
+              <button data-action="check" class="actionBtn checkBtn"><span>Parole</span></button>
+              <button data-action="call" class="actionBtn callBtn"><span>Suivre</span><strong id="callAmount"></strong></button>
+
+              <div class="raisePanel">
+                <div class="raisePresets">
+                  <button type="button" data-raise-preset="third">1/3</button>
+                  <button type="button" data-raise-preset="half">1/2</button>
+                  <button type="button" data-raise-preset="twothirds">2/3</button>
+                  <button type="button" data-raise-preset="pot">POT</button>
+                  <button type="button" data-raise-preset="allin">TAPIS</button>
+                </div>
+                <div class="raiseMain">
+                  <button id="raiseMinus" class="stepBtn" type="button">−</button>
+                  <input id="raiseAmount" type="range" min="20" max="2000" step="10" value="40" />
+                  <button id="raisePlus" class="stepBtn" type="button">+</button>
+                  <button data-action="raise" class="actionBtn raiseBtn"><span id="raiseVerb">Relancer</span><strong id="raiseLabel">40</strong></button>
+                </div>
+              </div>
+            </div>
+
+            <div id="preActions" class="preActions hidden">
+              <button data-preaction="fold">Se coucher</button>
+              <button data-preaction="checkfold">Parole / Se coucher</button>
+              <button data-preaction="call">Suivre</button>
+              <button data-preaction="clear" class="preClear">Annuler</button>
+            </div>
           </div>
+
           <button id="start" class="primary startBtn hidden">Démarrer la partie</button>
-        </div>
+        </section>
         <div id="gameError" class="gameError"></div>
       </main>
     </section>
+
+    <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modalCard">
+        <div class="modalHead"><h2 id="settingsTitle">Réglages de table</h2><button id="settingsClose" class="iconBtn">×</button></div>
+        <label class="settingRow"><span><strong>Cartes 4 couleurs</strong><small>♦ bleus, ♣ verts</small></span><input id="fourColor" type="checkbox" /></label>
+        <label class="settingRow"><span><strong>Animations</strong><small>Distribution et transitions</small></span><input id="animations" type="checkbox" checked /></label>
+        <label class="settingRow"><span><strong>Sons</strong><small>Actions et nouvelle main</small></span><input id="sounds" type="checkbox" checked /></label>
+        <label class="settingRow"><span><strong>Interface compacte</strong><small>Utile sur les petits écrans</small></span><input id="compactMode" type="checkbox" /></label>
+        <button id="fullscreenFromSettings" class="primary settingsFull">Passer en plein écran</button>
+        <p class="installHint">Sur iPhone/iPad : pour masquer totalement Safari, utilise Partager → « Sur l’écran d’accueil », puis ouvre le jeu depuis l’icône.</p>
+      </div>
+    </div>
   </div>
   <script src="config.js"></script>
   <script src="bootstrap.js"></script>
